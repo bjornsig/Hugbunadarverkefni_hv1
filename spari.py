@@ -24,7 +24,7 @@ class spari:
 				print('þú valdir ' + self.sparileid[int(temp)-1][0])
 				self.val = int(temp)
 				got_it = True
-			else
+			else:
 				print('veldu númer sparileiðanna')
 
 	def get_vextir(self):

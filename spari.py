@@ -15,7 +15,7 @@ class spari:
 		c = 1
 		print('Eftirfarandi sparnaðarleiðir eru í boði: ')
 		for i in self.sparileid:
-			print(c + '. ' + i[0] + '- vextirnir eru: ' + str(i[1]*100) + '- bundið í ' + str(i[2]) + ' mánuði')
+			print(str(c) + '. ' + i[0] + '- vextirnir eru: ' + str(i[1]*100) + '- bundið í ' + str(i[2]) + ' mánuði')
 			c += 1
 		got_it = False
 		while got_it == False:

@@ -22,7 +22,7 @@ class spari:
 			temp = raw_input('hvaða leið má bjóða þér ?\n')
 			if temp == "1" or temp == "2":
 				print('þú valdir ' + self.sparileid[int(temp)-1][0])
-				self.val = int(temp-1)
+				self.val = int(temp)-1
 				got_it = True
 			else:
 				print('veldu númer sparileiðanna')

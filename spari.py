@@ -11,7 +11,7 @@ class spari:
 
 
 	def byrja(self):
-		self.sparnadur = raw_input('hvað ertu tilbúinn að leggja til á mánuði')
+		self.sparnadur = raw_input('hvað ertu tilbúinn að leggja til á mánuði ?\n')
 		c = 1
 		print('Eftirfarandi sparnaðarleiðir eru í boði: ')
 		for i in self.sparileid:

@@ -16,6 +16,7 @@ class spari:
 		print('Eftirfarandi sparnaðarleiðir eru í boði: ')
 		for i in self.sparileid:
 			print(c + '. ' + i[0] + '- vextirnir eru: ' + str(i[1]*100) + '- bundið í ' + str(i[2]) + ' mánuði')
+			c += 1
 		got_it = False
 		while got_it == False
 			temp = raw_input('hvaða leið má bjóða þér ?\n')
@@ -27,4 +28,5 @@ class spari:
 				print('veldu númer sparileiðanna')
 
 	def get_vextir(self):
-		return self.sparileid[self.val][1]
+		return (self.sparileid[self.val][1],self.sparileid[self.val][0])
+

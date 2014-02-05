@@ -28,5 +28,5 @@ class spari:
 				print('veldu númer sparileiðanna')
 
 	def get_vextir(self):
-		return (self.sparileid[self.val][1],self.sparileid[self.val][0])
+		return (self.sparileid[self.val][1]*100,self.sparileid[self.val][0])
 

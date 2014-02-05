@@ -20,7 +20,7 @@ class spari:
 		got_it = False
 		while got_it == False:
 			temp = raw_input('hvaða leið má bjóða þér ?\n')
-			if temp == "1" || temp == "2":
+			if temp == "1" or temp == "2":
 				print('þú valdir ' + self.sparileid[int(temp)-1][0])
 				self.val = int(temp)
 				got_it = True

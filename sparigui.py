@@ -7,7 +7,7 @@ class sparnadur(tk.LabelFrame):
 
 	def __init__(self, foreldri, bg):
 
-		tk.LabelFrame.__init__(self, foreldri, background=bg, text='Sparnadur', padx=4, pady=4)
+		tk.LabelFrame.__init__(self, foreldri, background=bg, text='Sparnaður', padx=4, pady=4)
 		self.sparileidir = [('Vaxtasproti',0.036,0), ('Vaxtathrep',0.043,1)]
 		self.form()
 
@@ -26,21 +26,15 @@ class sparnadur(tk.LabelFrame):
 		timi.grid(column=1, row=0)
 
 		self.lengd = tk.Entry(rammi)
-		self.lengd.grid(column=1, row=1)
+		self.lengd.grid(column=1, row=1, columnspan=2)
 
-		moguleikar = ttk.Combobox(rammi, state='readonly')
-		moguleikar['values'] = (self.sparileidir[0][0],self.sparileidir[1][0])
+                self.timi_takki = tk.Button(rammi, text='Reikna tímabil').grid(column=3,row=1)
 
-		moguleikar.grid(column=2,row=1)
-		rammi.pack()
 
-                self.kronur1 = tk.Label(rammi, text='Hvað tekur það mig langan tíma að safna')
-                self.kronur2 = tk.Label(rammi, text='kr.')
-                self.safna = tk.Entry(rammi)
-                self.kronur1.grid(column=0,row=2,columnspan=1,sticky=tk.E)
-                self.safna.grid(column=1,row=2)
-                self.kronur2.grid(column=2,row=2,sticky=tk.W)
+		#moguleikar = ttk.Combobox(rammi, state='readonly')
+		#moguleikar['values'] = (self.sparileidir[0][0],self.sparileidir[1][0])
 
+		#moguleikar.grid(column=2,row=1)
                 rammi.pack(side=tk.TOP)
 
 

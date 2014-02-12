@@ -5,6 +5,7 @@ class spari:
 		self.sparnadur = 0
 		self.sparileid = [('Vaxtasproti',0.036,0), ('Vaxtaþrep',0.043,1)]
 		self.val = 0
+		self.lengd = 0
 
 		self.byrja()
 

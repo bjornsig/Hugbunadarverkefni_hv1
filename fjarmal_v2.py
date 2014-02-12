@@ -3,6 +3,7 @@
 
 import Tkinter as tk
 import ttk
+import sparigui
 
 class Merki(tk.Frame):
     def __init__(self, parent, bg):
@@ -75,7 +76,8 @@ class Grunnur(tk.Frame):
     def vidmot(self):
         self.lanagluggi = Lanagluggi(self, bg='blue')
         self.lanagluggi.pack(side=tk.TOP, fill='x', expand=True)
-        Spari(self, bg='green').pack(side=tk.TOP, fill='both')
+        sparigui.sparnadur(self,bg='green').pack(side=tk.TOP, fill='both')
+        #Spari(self, bg='green').pack(side=tk.TOP, fill='both')
         Takkar(self, self.lanagluggi.nytt_lan, self.lanagluggi.taka_ut_lan).pack(side=tk.TOP, fill='both')
 
 def main():

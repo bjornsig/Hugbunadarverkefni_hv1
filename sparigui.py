@@ -22,7 +22,7 @@ class sparnadur(tk.LabelFrame):
 		self.sparnadur = tk.Entry(rammi)
 		self.sparnadur.grid(column=0, row=1)
 
-		timi = tk.Label(rammi, text='tímabil')
+		timi = tk.Label(rammi, text='Tímabil')
 		timi.grid(column=1, row=0)
 
 		self.lengd = tk.Entry(rammi)
@@ -32,5 +32,14 @@ class sparnadur(tk.LabelFrame):
 		moguleikar['values'] = (self.sparileidir[0][0],self.sparileidir[1][0])
 
 		moguleikar.grid(column=2,row=1)
+
+                self.kronur1 = tk.Label(rammi, text='Hvað tekur það mig langan tíma að safna')
+                self.kronur2 = tk.Label(rammi, text='kr.')
+                self.safna = tk.Entry(rammi)
+                self.kronur1.grid(column=0,row=2,columnspan=1,sticky=tk.E)
+                self.safna.grid(column=1,row=2)
+                self.kronur2.grid(column=2,row=2,sticky=tk.W)
+
+                rammi.pack(side=tk.TOP)
 
 

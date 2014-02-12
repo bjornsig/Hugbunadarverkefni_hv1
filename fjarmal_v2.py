@@ -16,16 +16,22 @@ class Merki(tk.Frame):
         self.columnconfigure(2,weight=1)
 
 class Lan(tk.Frame):
+
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.form()
 
     def form(self):
-        self.tryggt = tk.Checkbutton(self).grid(row=0,column=0)
+        self.tryggt = tk.Checkbutton(self)
+        self.tryggt.grid(row=0,column=0)
         self.heiti = tk.Entry(self, width=50).grid(row=0,column=1)
         self.timabil = tk.Entry(self, width=10).grid(row=0,column=2)
         self.vextir = ttk.Combobox(self, state='readonly', width=10, values=['hallo','bless']).grid(row=0,column=3)
 
+    def fa_vexti(self):
+        return self.vextir
+
+    
 class Lanagluggi(tk.LabelFrame):
     def __init__(self, parent, bg):
         tk.LabelFrame.__init__(self, parent, background=bg, text='Fullt af lanum', padx=4, pady=4)
@@ -56,10 +62,12 @@ class Spari(tk.LabelFrame):
     def form(self):
         self.rammi = tk.Frame(self)
         self.rammi.pack(side=tk.TOP, fill='both')
-        self.tryggt = tk.Checkbutton(self.rammi).grid(row=0,column=0)
+        self.tryggt = tk.Checkbutton(self.rammi).grid(row=0,column=0, command = verdbolga)
         self.heiti = tk.Entry(self.rammi, width=50).grid(row=0,column=1)
         self.timabil = tk.Entry(self.rammi, width=10).grid(row=0,column=2)
         self.vextir = tk.Entry(self.rammi, width=10).grid(row=0,column=3)
+
+
 
 class Takkar(tk.Frame):
     def __init__(self, parent, nytt_lan, taka_ut_lan):

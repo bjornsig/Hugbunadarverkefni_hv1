@@ -32,5 +32,6 @@ class sparnadur(tk.LabelFrame):
 		moguleikar['values'] = (self.sparileidir[0][0],self.sparileidir[1][0])
 
 		moguleikar.grid(column=2,row=1)
+		rammi.pack()
 
 

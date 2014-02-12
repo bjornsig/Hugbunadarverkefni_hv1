@@ -2,16 +2,39 @@
 # encoding: utf-8
 
 import Tkinter as tk
+import matplotlib as mpl
 import ttk
 import sparigui
+mpl.use('TkAgg')
+from matplotlib.figure import Figure
+from numpy import arange, sin, pi
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+
+class Graf(tk.LabelFrame):
+    def __init__(self, parent, bg):
+        tk.LabelFrame.__init__(self, parent, background=bg, text='Graf', padx=4, pady=4)
+
+        f = Figure(figsize=(4,4), dpi=50)
+        a = f.add_subplot(111)
+        t = arange(0.0,3.0,0.01)
+        s = sin(2*pi*t)
+
+        a.plot(t,s)
+
+        canvas = FigureCanvasTkAgg(f, master=self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+
+        canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+
 
 class Merki(tk.Frame):
     def __init__(self, parent, bg):
         tk.Frame.__init__(self, parent, background=bg)
         tk.Label(self, text='Verðtryggt').grid(row=0,column=0)
-        tk.Label(self, text='Heiti lans').grid(row=0,column=1)
+        tk.Label(self, text='Heiti láns').grid(row=0,column=1)
         tk.Label(self, text='Vextir').grid(row=0,column=2)
-        tk.Label(self, text='Timabil').grid(row=0,column=3)
+        tk.Label(self, text='Tímabil').grid(row=0,column=3)
         self.columnconfigure(1,weight=3)
         self.columnconfigure(2,weight=1)
 
@@ -35,7 +58,7 @@ class Lan(tk.Frame):
 class Lanagluggi(tk.LabelFrame):
     def __init__(self, parent, bg):
         tk.LabelFrame.__init__(self, parent, background=bg, text='Fullt af lanum', padx=4, pady=4)
-        Merki(self, bg='orange').pack(side=tk.TOP, fill='both')
+        Merki(self, bg='lightgray').pack(side=tk.TOP, fill='both')
         self.lanasafn = []
         lan = Lan(self)
         lan.pack(side=tk.TOP)
@@ -53,22 +76,6 @@ class Lanagluggi(tk.LabelFrame):
             lan.pack_forget()
             lan.destroy()
 
-class Spari(tk.LabelFrame):
-    def __init__(self, parent, bg):
-        tk.LabelFrame.__init__(self, parent, background=bg, text='Sparnadur', padx=4, pady=4)
-        Merki(self, bg='orange').pack(side=tk.TOP, fill='both')
-        self.form()
-
-    def form(self):
-        self.rammi = tk.Frame(self)
-        self.rammi.pack(side=tk.TOP, fill='both')
-        self.tryggt = tk.Checkbutton(self.rammi).grid(row=0,column=0, command = verdbolga)
-        self.heiti = tk.Entry(self.rammi, width=50).grid(row=0,column=1)
-        self.timabil = tk.Entry(self.rammi, width=10).grid(row=0,column=2)
-        self.vextir = tk.Entry(self.rammi, width=10).grid(row=0,column=3)
-
-
-
 class Takkar(tk.Frame):
     def __init__(self, parent, nytt_lan, taka_ut_lan):
         tk.Frame.__init__(self, parent)
@@ -82,14 +89,15 @@ class Grunnur(tk.Frame):
         self.vidmot()
 
     def vidmot(self):
-        self.lanagluggi = Lanagluggi(self, bg='blue')
+        self.lanagluggi = Lanagluggi(self, bg='lightgray')
         self.lanagluggi.pack(side=tk.TOP, fill='x', expand=True)
-        sparigui.sparnadur(self,bg='green').pack(side=tk.TOP, fill='both')
-        #Spari(self, bg='green').pack(side=tk.TOP, fill='both')
+        sparigui.sparnadur(self,bg='lightgray').pack(side=tk.TOP, fill='both')
         Takkar(self, self.lanagluggi.nytt_lan, self.lanagluggi.taka_ut_lan).pack(side=tk.TOP, fill='both')
+        Graf(self,bg='lightgray').pack(side=tk.BOTTOM, fill='both', expand=True)
 
 def main():
     root = tk.Tk()
+    root.wm_title('Besta forrit í heimi!')
     app = Grunnur(root)
     app.pack(fill='both', expand=True)
     root.mainloop()

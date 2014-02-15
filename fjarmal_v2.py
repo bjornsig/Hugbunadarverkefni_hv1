@@ -4,24 +4,19 @@
 import Tkinter as tk
 import tkMessageBox
 import matplotlib as mpl
-import ttk
-import sparigui
 mpl.use('TkAgg')
 from matplotlib.figure import Figure
-from numpy import arange, sin, pi
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 SPARI_VEXTIR = 1.035
+BACKGROUND = 'lightgray'
 
 class Graf(tk.LabelFrame):
-    def __init__(self, parent, bg):
-        tk.LabelFrame.__init__(self, parent, background=bg, text='Graf', padx=4, pady=4)
+    def __init__(self, parent):
+        tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
 
         f = Figure(figsize=(4,4), dpi=50)
         self.a = f.add_subplot(111)
-        #t = arange(0.0,3.0,0.01)
-        #s = sin(2*pi*t)
-
 
         self.canvas = FigureCanvasTkAgg(f, master=self)
         self.canvas.show()
@@ -34,84 +29,54 @@ class Graf(tk.LabelFrame):
         self.canvas.show()
 
 
-class Sparispurn(tk.LabelFrame):
-    def __init__(self, parent, teikna_a_graf, bg):
-        tk.LabelFrame.__init__(self, parent, background=bg, text='Sparnaður', padx=4, pady=4)
-        self.teikna_a_graf = teikna_a_graf
+class Sparnadur(tk.LabelFrame):
+    def __init__(self, parent):
+        tk.LabelFrame.__init__(self, parent, text='Sparnaður', padx=4, pady=4)
+        self.upphaed = tk.Entry(self)
+        self.timi_fyrir_peninga = tk.Entry(self)
+        self.takki_timi = tk.Button(self, text='Reikna')
+        self.peningar_eftir_tima = tk.Entry(self)
+        self.takki_peningar = tk.Button(self, text='Reikna')
 
+        self.vidmot_spari()
+        self.vidmot_timi()
+        self.vidmot_peningar()
 
-        self.spari1 = tk.Label(self, text='Ég get lagt fyrir')
-        self.spari2 = tk.Label(self, text='kr. á mánuði.')
-        self.hvad_a_eg = tk.Entry(self)
-        self.spari1.grid(column=0,row=0,sticky=tk.E)
-        self.hvad_a_eg.grid(column=1,row=0)
-        self.spari2.grid(column=2,row=0,sticky=tk.W)
+    def vidmot_spari(self):
+        tk.Label(self, text='Ég get lagt fyrir').grid(column=0,row=0,sticky=tk.E)
+        self.upphaed.grid(column=1,row=0)
+        tk.Label(self, text='kr. á mánuði.').grid(column=2,row=0,sticky=tk.W)
 
+    def vidmot_timi(self):
+        tk.Label(self, text='Hvað tekur það mig langan tíma að safna').grid(
+                column=0,row=1,sticky=tk.E)
+        self.timi_fyrir_peninga.grid(column=1,row=1)
+        tk.Label(self, text='kr.?').grid(column=2,row=1,sticky=tk.W)
+        self.takki_timi.grid(column=3,row=1)
 
-        self.kronur1 = tk.Label(self, text='Hvað tekur það mig langan tíma að safna')
-        self.kronur2 = tk.Label(self, text='kr.?')
-        self.safna1 = tk.Entry(self)
-        self.kronur1.grid(column=0,row=1,sticky=tk.E)
-        self.safna1.grid(column=1,row=1)
-        self.kronur2.grid(column=2,row=1,sticky=tk.W)
-        self.spari_takki1 = tk.Button(self, text='Reikna', command=self.reikna_spari).grid(column=3,row=1)
-
-
-        self.kronur3 = tk.Label(self, text='Hvað mun ég eiga mikinn pening eftir')
-        self.kronur4 = tk.Label(self, text='mánuði?')
-        self.safna2 = tk.Entry(self)
-        self.kronur3.grid(column=0,row=2,sticky=tk.E)
-        self.safna2.grid(column=1,row=2)
-        self.kronur4.grid(column=2,row=2,sticky=tk.W)
-        self.spari_takki2 = tk.Button(self, text='Reikna', command=self.reikna_pening).grid(column=3,row=2)
-
-    def teikna(self):
-        x = range(0,5)
-        y = []
-        temp = float(self.hvad_a_eg.get())
-        for i in x:
-            temp = temp + temp*SPARI_VEXTIR
-            y.append(temp)
-        self.teikna_a_graf(x,y)
-
-    def reikna_spari(self):
-        eg_a = int(self.hvad_a_eg.get())
-        eg_vil = int(self.safna1.get())
-        svar = eg_vil / ( eg_a * SPARI_VEXTIR )
-        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
-
-    def reikna_pening(self):
-        eg_a = int(self.hvad_a_eg.get())
-        eftir_tima = int(self.safna2.get())
-        svar = eg_a * SPARI_VEXTIR * eftir_tima
-        tkMessageBox.showinfo('Sparnaður', 'Þú munt eiga ' + str(int(round(svar))) + ' kr.')
-
-
-class Merki(tk.Frame):
-    def __init__(self, parent, bg):
-        tk.Frame.__init__(self, parent, background=bg)
-        tk.Label(self, text='Verðtryggt').grid(row=0,column=0)
-        tk.Label(self, text='Heiti láns').grid(row=0,column=1)
-        tk.Label(self, text='Vextir').grid(row=0,column=2)
-        tk.Label(self, text='Tímabil').grid(row=0,column=3)
-        self.columnconfigure(1,weight=3)
-        self.columnconfigure(2,weight=1)
+    def vidmot_peningar(self):
+        tk.Label(self, text='Hvað mun ég eiga mikinn pening eftir').grid(
+                column=0,row=2,sticky=tk.E)
+        self.peningar_eftir_tima.grid(column=1,row=2)
+        tk.Label(self, text='mánuði?').grid(column=2,row=2,sticky=tk.W)
+        self.takki_peningar.grid(column=3,row=2)
 
 
 class Lan(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
-        self.form()
-
-    def form(self):
         self.tryggt = tk.Checkbutton(self)
-        self.tryggt.grid(row=0,column=0)
         self.heiti = tk.Entry(self, width=50)
-        self.heiti.grid(row=0,column=1)
-        self.timabil = tk.Entry(self, width=10)
-        self.timabil.grid(row=0,column=3)
         self.vextir = tk.Entry(self, width=10)
+        self.timabil = tk.Entry(self, width=10)
+
+        self.vidmot()
+
+    def vidmot(self):
+        self.tryggt.grid(row=0,column=0)
+        self.heiti.grid(row=0,column=1)
         self.vextir.grid(row=0,column=2)
+        self.timabil.grid(row=0,column=3)
 
     def fa_vexti(self):
         return float(self.vextir.get())
@@ -120,30 +85,93 @@ class Lan(tk.Frame):
         return self.heiti.get()
 
 
-class Lanagluggi(tk.LabelFrame):
-    def __init__(self, parent, bg):
-        tk.LabelFrame.__init__(self, parent, background=bg, text='Lán', padx=4, pady=4)
-        Merki(self, bg='lightgray').pack(side=tk.TOP, fill='both')
-        self.lanasafn = []
+class Lanasafn(tk.LabelFrame):
+    def __init__(self, parent):
+        tk.LabelFrame.__init__(self, parent, text='Lán', padx=4, pady=4)
+        self.vidmot().pack(side=tk.TOP, fill='both')
+        self.bunki = []
         lan = Lan(self)
         lan.pack(side=tk.TOP)
-        self.lanasafn.append(lan)
+        self.bunki.append(lan)
+
+    def vidmot(self):
+        merki = tk.Frame(self)
+        tk.Label(merki, text='Verðtryggt').grid(row=0,column=0)
+        tk.Label(merki, text='Heiti láns').grid(row=0,column=1)
+        tk.Label(merki, text='Vextir').grid(row=0,column=2)
+        tk.Label(merki, text='Tímabil').grid(row=0,column=3)
+        merki.columnconfigure(1,weight=3)
+        merki.columnconfigure(2,weight=1)
+        return merki
 
     def nytt_lan(self):
-        if len(self.lanasafn) < 6:
+        if len(self.bunki) < 6:
             lan = Lan(self)
             lan.pack(side=tk.TOP)
-            self.lanasafn.append(lan)
+            self.bunki.append(lan)
 
     def taka_ut_lan(self):
-        if len(self.lanasafn) > 1:
-            lan = self.lanasafn.pop()
+        if len(self.bunki) > 1:
+            lan = self.bunki.pop()
             lan.pack_forget()
             lan.destroy()
 
-    def fa_topp_vexti(self):
-        toppur = self.lanasafn[0]
-        for i in self.lanasafn:
+
+class Takkar(tk.Frame):
+    def __init__(self, foreldri):
+        tk.Frame.__init__(self, foreldri)
+        self.meira = tk.Button(self, text='Bæta við láni')
+        self.minna = tk.Button(self, text='Fjarlægja lán')
+        self.hvad = tk.Button(self, text='Hvað á ég að gera?')
+        self.teikna = tk.Button(self, text='Teikna')
+        self.vidmot()
+
+    def vidmot(self):
+        self.meira.pack(side=tk.LEFT, fill='both', expand='True')
+        self.minna.pack(side=tk.LEFT, fill='both', expand='True')
+        self.hvad.pack(side=tk.LEFT, fill='both', expand='True')
+        self.teikna.pack(side=tk.LEFT, fill='both', expand='True')
+
+
+class Reikningur:
+    def __init__(self, graf, sparnadur, lanasafn, takkar):
+        self.graf = graf
+        self.sparnadur = sparnadur
+        self.lanasafn = lanasafn
+        self.takkar = takkar
+
+        self.virkni_takkar()
+        self.virkni_sparnadur()
+
+    def virkni_takkar(self):
+        self.takkar.meira.config(command=self.lanasafn.nytt_lan)
+        self.takkar.minna.config(command=self.lanasafn.taka_ut_lan)
+        self.takkar.hvad.config(command=self.bera_saman_vexti)
+        self.takkar.teikna.config(command=self.teikna)
+
+    def bera_saman_vexti(self):
+        vextir = self.fa_topp_vexti(self.lanasafn.bunki)
+        tkMessageBox.showinfo('Sparnaður', 'Hagstæðast er að borga í ' + vextir)
+
+    def virkni_sparnadur(self):
+        self.sparnadur.takki_timi.config(command=self.sparnadur_timi)
+        self.sparnadur.takki_peningar.config(command=self.sparnadur_peningar)
+
+    def sparnadur_timi(self):
+        eg_a = int(self.sparnadur.upphaed.get())
+        eg_vil = int(self.sparnadur.timi_fyrir_peninga.get())
+        svar = eg_vil / ( eg_a * SPARI_VEXTIR )
+        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
+
+    def sparnadur_peningar(self):
+        eg_a = int(self.sparnadur.upphaed.get())
+        timi = int(self.sparnadur.peningar_eftir_tima.get())
+        svar = eg_a * SPARI_VEXTIR * timi
+        tkMessageBox.showinfo('Sparnaður', 'Þú munt eiga ' + str(int(round(svar))) + ' kr.')
+
+    def fa_topp_vexti(self, bunki):
+        toppur = bunki[0]
+        for i in bunki:
             if i.fa_vexti() > toppur.fa_vexti():
                 toppur = i
         if toppur.fa_vexti() > SPARI_VEXTIR:
@@ -151,43 +179,32 @@ class Lanagluggi(tk.LabelFrame):
         else:
             return 'Vaxtasproti'
 
-
-class Takkar(tk.Frame):
-    def __init__(self, parent, nytt_lan, taka_ut_lan, fa_topp_vexti, teikna_a_graf):
-        tk.Frame.__init__(self, parent)
-        self.fa_topp_vexti = fa_topp_vexti
-        self.teikna_a_graf = teikna_a_graf
-        self.meira = tk.Button(self, text='Bæta við láni', command=nytt_lan).pack(side=tk.LEFT, fill='both', expand='True')
-        self.minna = tk.Button(self, text='Fjarlægja lán', command=taka_ut_lan).pack(side=tk.LEFT, fill='both', expand='True')
-        self.teikna = tk.Button(self, text='Teikna', command=self.teikna).pack(side=tk.LEFT, fill='both', expand='True')
-
     def teikna(self):
-        vextir = self.fa_topp_vexti()
-        tkMessageBox.showinfo('Sparnaður', 'Hagstæðast er að borga í ' + vextir)
-        self.teikna_a_graf()
-
+        x = range(0,5)
+        y = []
+        temp = 0
+        for i in x:
+            temp += float(self.sparnadur.upphaed.get())*SPARI_VEXTIR
+            y.append(temp)
+        self.graf.teikna_a_graf(x,y)
 
 
 class Grunnur(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
+
+        self.graf = Graf(self)
+        self.sparnadur = Sparnadur(self)
+        self.lanasafn= Lanasafn(self)
+        self.takkar = Takkar(self)
+        self.reikningur = Reikningur(self.graf, self.sparnadur, self.lanasafn , self.takkar)
+
         self.vidmot()
 
     def vidmot(self):
-        self.graf = Graf(self,bg='lightgray')
-        self.sparispurn = Sparispurn(self,
-            self.graf.teikna_a_graf,
-            bg='lightgray'
-            )
-        self.sparispurn.pack(side=tk.TOP,fill='both')
-        self.lanagluggi = Lanagluggi(self, bg='lightgray')
-        self.lanagluggi.pack(side=tk.TOP, fill='x', expand=True)
-        Takkar(self,
-            self.lanagluggi.nytt_lan,
-            self.lanagluggi.taka_ut_lan,
-            self.lanagluggi.fa_topp_vexti,
-            self.sparispurn.teikna
-            ).pack(side=tk.TOP, fill='both')
+        self.sparnadur.pack(side=tk.TOP,fill='both')
+        self.lanasafn.pack(side=tk.TOP, fill='x', expand=True)
+        self.takkar.pack(side=tk.TOP, fill='both')
         self.graf.pack(side=tk.BOTTOM, fill='both', expand=True)
 
 

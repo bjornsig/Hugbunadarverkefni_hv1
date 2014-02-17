@@ -33,40 +33,42 @@ class Sparnadur(tk.LabelFrame):
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent, text='Sparnaður', padx=4, pady=4)
         self.upphaed = tk.Entry(self)
+        self.timabil = tk.Entry(self)
         self.timi_fyrir_peninga = tk.Entry(self)
         self.takki_timi = tk.Button(self, text='Reikna')
-        self.peningar_eftir_tima = tk.Entry(self)
         self.takki_peningar = tk.Button(self, text='Reikna')
 
         self.vidmot_spari()
-        self.vidmot_timi()
         self.vidmot_peningar()
+        self.vidmot_timi()
 
     def vidmot_spari(self):
         tk.Label(self, text='Ég get lagt fyrir').grid(column=0,row=0,sticky=tk.E)
         self.upphaed.grid(column=1,row=0)
-        tk.Label(self, text='kr. á mánuði.').grid(column=2,row=0,sticky=tk.W)
+        tk.Label(self, text='kr. á mánuði').grid(column=2,row=0,sticky=tk.W)
+        tk.Label(self, text='í').grid(column=0,row=1,sticky=tk.E)
+        self.timabil.grid(column=1,row=1)
+        tk.Label(self, text='mánuði.').grid(column=2,row=1,sticky=tk.W)
+
+    def vidmot_peningar(self):
+        tk.Label(self, text='Hvað mun ég eiga mikinn pening eftir þennan tíma?').grid(
+                column=0,row=2, columnspan=3,sticky=tk.E)
+        self.takki_peningar.grid(column=3,row=2)
 
     def vidmot_timi(self):
         tk.Label(self, text='Hvað tekur það mig langan tíma að safna').grid(
-                column=0,row=1,sticky=tk.E)
-        self.timi_fyrir_peninga.grid(column=1,row=1)
-        tk.Label(self, text='kr.?').grid(column=2,row=1,sticky=tk.W)
-        self.takki_timi.grid(column=3,row=1)
-
-    def vidmot_peningar(self):
-        tk.Label(self, text='Hvað mun ég eiga mikinn pening eftir').grid(
-                column=0,row=2,sticky=tk.E)
-        self.peningar_eftir_tima.grid(column=1,row=2)
-        tk.Label(self, text='mánuði?').grid(column=2,row=2,sticky=tk.W)
-        self.takki_peningar.grid(column=3,row=2)
+                column=0,row=3,sticky=tk.E)
+        self.timi_fyrir_peninga.grid(column=1,row=3)
+        tk.Label(self, text='kr.?').grid(column=2,row=3,sticky=tk.W)
+        self.takki_timi.grid(column=3,row=3)
 
 
 class Lan(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
-        self.tryggt = tk.Checkbutton(self)
+        self.tryggt = tk.Button(self, text='Nei')
         self.heiti = tk.Entry(self, width=50)
+        self.upphaed = tk.Entry(self, width=20)
         self.vextir = tk.Entry(self, width=10)
         self.timabil = tk.Entry(self, width=10)
 
@@ -74,15 +76,22 @@ class Lan(tk.Frame):
 
     def vidmot(self):
         self.tryggt.grid(row=0,column=0)
-        self.heiti.grid(row=0,column=1)
-        self.vextir.grid(row=0,column=2)
-        self.timabil.grid(row=0,column=3)
+        self.upphaed.grid(row=0,column=1)
+        self.heiti.grid(row=0,column=2)
+        self.vextir.grid(row=0,column=3)
+        self.timabil.grid(row=0,column=4)
 
     def fa_vexti(self):
         return float(self.vextir.get())
 
     def fa_nafn(self):
         return self.heiti.get()
+
+    def fa_upphaed(self):
+        return int(self.upphaed.get())
+
+    def fa_timabil(self):
+        return int(self.timabil.get())
 
 
 class Lanasafn(tk.LabelFrame):
@@ -97,11 +106,13 @@ class Lanasafn(tk.LabelFrame):
     def vidmot(self):
         merki = tk.Frame(self)
         tk.Label(merki, text='Verðtryggt').grid(row=0,column=0)
-        tk.Label(merki, text='Heiti láns').grid(row=0,column=1)
-        tk.Label(merki, text='Vextir').grid(row=0,column=2)
-        tk.Label(merki, text='Tímabil').grid(row=0,column=3)
-        merki.columnconfigure(1,weight=3)
-        merki.columnconfigure(2,weight=1)
+        tk.Label(merki, text='Upphæð').grid(row=0,column=1)
+        tk.Label(merki, text='Heiti láns').grid(row=0,column=2)
+        tk.Label(merki, text='Vextir').grid(row=0,column=3)
+        tk.Label(merki, text='Tímabil').grid(row=0,column=4)
+        merki.columnconfigure(1,weight=2)
+        merki.columnconfigure(2,weight=3)
+        merki.columnconfigure(3,weight=1)
         return merki
 
     def nytt_lan(self):
@@ -161,32 +172,44 @@ class Reikningur:
         eg_a = int(self.sparnadur.upphaed.get())
         eg_vil = int(self.sparnadur.timi_fyrir_peninga.get())
         svar = eg_vil / ( eg_a * SPARI_VEXTIR )
-        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
+        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði að safna því ef þú notar Vaxtasprota.')
 
     def sparnadur_peningar(self):
         eg_a = int(self.sparnadur.upphaed.get())
-        timi = int(self.sparnadur.peningar_eftir_tima.get())
+        timi = int(self.sparnadur.timabil.get())
         svar = eg_a * SPARI_VEXTIR * timi
         tkMessageBox.showinfo('Sparnaður', 'Þú munt eiga ' + str(int(round(svar))) + ' kr.')
 
-    def fa_topp_vexti(self, bunki):
+    def fa_topp_lan(self, bunki):
         toppur = bunki[0]
         for i in bunki:
             if i.fa_vexti() > toppur.fa_vexti():
                 toppur = i
-        if toppur.fa_vexti() > SPARI_VEXTIR:
-            return toppur.fa_nafn()
+        return toppur
+
+    def fa_topp_vexti(self, bunki):
+        lan = self.fa_topp_lan(bunki)
+        if lan[1] > SPARI_VEXTIR:
+            return lan[0]
         else:
             return 'Vaxtasproti'
 
     def teikna(self):
-        x = range(0,5)
-        y = []
-        temp = 0
-        for i in x:
-            temp += float(self.sparnadur.upphaed.get())*SPARI_VEXTIR
-            y.append(temp)
-        self.graf.teikna_a_graf(x,y)
+        lan = self.fa_topp_lan(self.lanasafn.bunki)
+        timi_lan = lan.fa_timabil()
+        timi_spari = int(self.sparnadur.timabil.get())
+        upphaed = lan.fa_upphaed() * (lan.fa_vexti() / 100 + 1)
+        spari = int(self.sparnadur.upphaed.get())
+        manadarleg_greidsla = upphaed / timi_lan
+        x = range(0,timi_spari+1)
+        y_lan = [upphaed]
+        y_spari = [upphaed]
+        for i in x[:-1]:
+            y_lan.append(y_lan[i] - manadarleg_greidsla)
+            y_spari.append(y_spari[i] - spari*SPARI_VEXTIR - manadarleg_greidsla)
+        print(len(x),len(y_lan))
+        self.graf.teikna_a_graf(x,y_lan)
+        self.graf.teikna_a_graf(x,y_spari)
 
 
 class Grunnur(tk.Frame):

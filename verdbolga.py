@@ -1,6 +1,8 @@
+# encoding: utf-8
+
 #Fyrsta talan er verðbólga ársins 1990,...,2013.
 
-verdbolga [15.85833333,
+verdbolga = [15.85833333,
 6.791666667,
 4.025,
 4.075,

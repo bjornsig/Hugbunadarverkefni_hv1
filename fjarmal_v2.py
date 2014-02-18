@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import Tkinter as tk
+import ttk
 import tkMessageBox
 import verdbolga
 import re
@@ -72,12 +73,14 @@ class Verdtrygging(tk.Toplevel):
     def __init__(self):
         tk.Toplevel.__init__(self)
         self.stada = tk.IntVar()
-        self.trygging = tk.Entry(self, width=10)
+        self.fyrra_ar = ttk.Combobox(self, state='readonly', width=10, values=verdbolga.artal)
+        self.seinna_ar = ttk.Combobox(self, state='readonly', width=10, values=verdbolga.artal)
         hallo = tk.Label(self, text='Viltu verðtryggingu')
-        self.btn = tk.Button(self, text='Skrá', command=(lambda : self.wm_withdraw()))
+        self.skra = tk.Button(self, text='Skrá')
         hallo.pack()
-        self.trygging.pack()
-        self.btn.pack()
+        self.fyrra_ar.pack()
+        self.seinna_ar.pack()
+        self.skra.pack()
 
 
 class Lan(tk.Frame):
@@ -85,6 +88,7 @@ class Lan(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.verdtrygging = Verdtrygging()
         self.verdtrygging.wm_withdraw()
+        self.verdtrygging.skra.config(command=self.skra_tryggingu)
         self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, command=self.tryggja)
         self.heiti = tk.Entry(self, width=30)
         self.upphaed = tk.Entry(self, width=15)
@@ -92,6 +96,11 @@ class Lan(tk.Frame):
         self.timabil = tk.Entry(self, width=10)
 
         self.vidmot()
+
+    def skra_tryggingu(self):
+        vt = self.verdtrygging.fyrra_ar.get() + '-' + self.verdtrygging.seinna_ar.get()
+        self.tryggt.config(text=vt)
+        self.verdtrygging.wm_withdraw()
 
     def vidmot(self):
         self.tryggt.grid(row=0,column=0)
@@ -103,6 +112,8 @@ class Lan(tk.Frame):
     def tryggja(self):
         if self.verdtrygging.stada.get():
             self.verdtrygging.wm_deiconify()
+        else:
+            self.tryggt.config(text='')
 
     def fa_vexti(self):
         vextir = self.vextir.get()
@@ -112,35 +123,18 @@ class Lan(tk.Frame):
         elif len(vextir)==0:
             tkMessageBox.showinfo('villa','gleymdir að fylla út vaxtadálkinn fyrir ' + self.heiti.get())
         elif self.verdtrygging.stada.get():
-            return float(vextir) + float(self.verdtrygging.trygging.get())
+            return float(vextir) + float(self.verdtrygging.fyrra_ar.get())
         else:
             return float(vextir)
 
     def fa_nafn(self):
-        heiti = self.heiti.get()
-        athugun = re.compile('\s')
-        if len(heiti)==0:
-            tkMessageBox.showinfo('villa','gleymdir að fylla út lánsheiti fyrir lánið þitt')
-        if athugun.search(heiti):
-            tkMessageBox.showinfo('villa','þú verður að slá inn bókstafi, ekki bara bil')
-        return heiti
+        return self.heiti.get()
 
     def fa_upphaed(self):
-        upphaed = self.upphaed.get()
-        athugun = re.compile('[A-Za-z]')
-        if athugun.search(upphaed):
-             tkMessageBox.showinfo('villa','gleymdir að fylla út upphæðina fyrir ' + self.heiti.get())
-        return int(upphaed)
+        return int(self.upphaed.get())
 
     def fa_timabil(self):
-        timabil = self.timabil.get()
-        athugun = re.compile('[A-Za-z]')
-        if athugun.search(timabil):
-            tkMessageBox.showinfo('villa','Það er bókstafur í tímabilsdálknum hjá ' + self.heiti.get())
-        elif len(vextir)==0:
-            tkMessageBox.showinfo('villa','gleymdir að fylla út tímabilsdálkinn fyrir ' + self.heiti.get())
-        else:
-            return int(timabil)
+        return int(self.timabil.get())
 
 
 class Lanasafn(tk.LabelFrame):
@@ -252,8 +246,8 @@ class Reikningur:
 
     def fa_topp_vexti(self, bunki):
         lan = self.fa_topp_lan(bunki)
-        if lan[1] > SPARI_VEXTIR:
-            return lan[0]
+        if lan.fa_vexti() > SPARI_VEXTIR:
+            return lan.fa_nafn()
         else:
             return 'Vaxtasproti'
 

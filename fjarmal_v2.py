@@ -117,7 +117,14 @@ class Lan(tk.Frame):
         return int(self.upphaed.get())
 
     def fa_timabil(self):
-        return int(self.timabil.get())
+        timabil = self.timabil.get()
+        athugun = re.compile('[A-Za-z]')
+        if athugun.search(timabil):
+            tkMessageBox.showinfo('villa','Það er bókstafur í tímabilsdálknum hjá ' + self.heiti.get())
+        elif len(vextir)==0:
+            tkMessageBox.showinfo('villa','gleymdir að fylla út tímabilsdálkinn fyrir ' + self.heiti.get())
+        else:
+            return int(timabil)
 
 
 class Lanasafn(tk.LabelFrame):

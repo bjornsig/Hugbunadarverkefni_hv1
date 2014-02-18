@@ -112,10 +112,20 @@ class Lan(tk.Frame):
             return float(vextir)
 
     def fa_nafn(self):
-        return self.heiti.get()
+        heiti = self.heiti.get()
+        athugun = re.compile('\s')
+        if len(heiti)==0:
+            tkMessageBox.showinfo('villa','gleymdir að fylla út lánsheiti fyrir lánið þitt')
+        if athugun.search(heiti):
+            tkMessageBox.showinfo('villa','þú verður að slá inn bókstafi, ekki bara bil')
+        return heiti
 
     def fa_upphaed(self):
-        return int(self.upphaed.get())
+        upphaed = self.upphaed.get()
+        athugun = re.compile('[A-Za-z]')
+        if athugun.search(upphaed):
+             tkMessageBox.showinfo('villa','gleymdir að fylla út upphæðina fyrir ' + self.heiti.get())
+        return int(upphaed)
 
     def fa_timabil(self):
         timabil = self.timabil.get()

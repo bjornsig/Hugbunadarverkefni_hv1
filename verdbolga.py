@@ -54,5 +54,5 @@ artal = [1990,
 2013]
 
 map(str, artal)
-#Meðaltal verðbólgu síðustu ára, notað ef notandi vill staðlað verðtryggt lán.
+#Meðaltal verðbólgu síðustu ára, notað ef notandi vill staðlaða verðbólgu fyrir lánið sitt.
 stodlud_verdbolga = 5.166319444

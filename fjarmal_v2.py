@@ -71,6 +71,7 @@ class Sparnadur(tk.LabelFrame):
 class Verdtrygging(tk.Toplevel):
     def __init__(self):
         tk.Toplevel.__init__(self)
+        self.stada = 0
         hallo = tk.Label(self, text='Viltu verðtryggingu')
         self.btn = tk.Button(self, text='Skrá', command=(lambda : self.wm_withdraw()))
         hallo.pack()
@@ -82,7 +83,7 @@ class Lan(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.verdtrygging = Verdtrygging()
         self.verdtrygging.wm_withdraw()
-        self.tryggt = tk.Checkbutton(self, command=self.vt)
+        self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, command=self.vt)
         self.heiti = tk.Entry(self, width=30)
         self.upphaed = tk.Entry(self, width=15)
         self.vextir = tk.Entry(self, width=10)
@@ -211,13 +212,13 @@ class Reikningur:
             tkMessageBox.showinfo('villa', 'verður að fylla út báða reiti! \nmundu að við notum bara heilar tölur')
         elif int(eg_a)<=0:
             tkMessageBox.showinfo('villa', 'Þú verður að leggja eitthvað fyrir! \nmundu að við notum bara heilar tölur')
-        else:    
+        else:
             svar = int(eg_vil) / ( int(eg_a) * SPARI_VEXTIR )
             tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
 
     def sparnadur_peningar(self):
         eg_a = self.sparnadur.upphaed.get()
-        timi = self.sparnadur.peningar_eftir_tima.get()
+        timi = self.sparnadur.timabil.get()
         athugun = re.compile('\D+')
         if athugun.search(eg_a) or athugun.search(timi):
             tkMessageBox.showinfo('villa', 'Þú verður að slá inn tölu ekki bókstaf! \nmundu að við notum bara heilar tölur')
@@ -268,7 +269,7 @@ class Grunnur(tk.Frame):
         self.sparnadur = Sparnadur(self)
         self.lanasafn= Lanasafn(self)
         self.takkar = Takkar(self)
-        self.reikningur = Reikningur(self.sparnadur, self.lanasafn , self.takkar)
+        self.reikningur = Reikningur(self.graf, self.sparnadur, self.lanasafn , self.takkar)
 
         self.vidmot()
 

@@ -4,30 +4,31 @@
 import Tkinter as tk
 import tkMessageBox
 import verdbolga
-import matplotlib as mpl
-mpl.use('TkAgg')
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+#import matplotlib as mpl
+#mpl.use('TkAgg')
+#from matplotlib.figure import Figure
+#from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import re
 
 SPARI_VEXTIR = 1.035
 BACKGROUND = 'lightgray'
 
-class Graf(tk.LabelFrame):
-    def __init__(self, parent):
-        tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
+#class Graf(tk.LabelFrame):
+#    def __init__(self, parent):
+#        tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
 
-        f = Figure(figsize=(4,4), dpi=50)
-        self.a = f.add_subplot(111)
+#        f = Figure(figsize=(4,4), dpi=50)
+#        self.a = f.add_subplot(111)
 
-        self.canvas = FigureCanvasTkAgg(f, master=self)
-        self.canvas.show()
-        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+#        self.canvas = FigureCanvasTkAgg(f, master=self)
+#        self.canvas.show()
+#        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
-        self.canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+#        self.canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
-    def teikna_a_graf(self, x, y):
-        self.a.plot(x,y)
-        self.canvas.show()
+#    def teikna_a_graf(self, x, y):
+#        self.a.plot(x,y)
+#        self.canvas.show()
 
 
 class Sparnadur(tk.LabelFrame):
@@ -80,7 +81,14 @@ class Lan(tk.Frame):
         self.timabil.grid(row=0,column=3)
 
     def fa_vexti(self):
-        return float(self.vextir.get())
+        vextir = self.vextir.get()
+        athugun = re.compile('[A-Za-z]')
+        if athugun.search(vextir):
+            tkMessageBox.showinfo('villa','Það er bókstafur í vaxtarálknum hjá ' + self.heiti.get())
+        elif len(vextir)==0:
+            tkMessageBox.showinfo('villa','gleymdir að fylla út vaxtadálkinn fyrir ' + self.heiti.get())
+        else:
+            return float(vextir)
 
     def fa_nafn(self):
         return self.heiti.get()
@@ -135,8 +143,8 @@ class Takkar(tk.Frame):
 
 
 class Reikningur:
-    def __init__(self, graf, sparnadur, lanasafn, takkar):
-        self.graf = graf
+    def __init__(self, sparnadur, lanasafn, takkar):
+        #self.graf = graf
         self.sparnadur = sparnadur
         self.lanasafn = lanasafn
         self.takkar = takkar
@@ -159,16 +167,31 @@ class Reikningur:
         self.sparnadur.takki_peningar.config(command=self.sparnadur_peningar)
 
     def sparnadur_timi(self):
-        eg_a = int(self.sparnadur.upphaed.get())
-        eg_vil = int(self.sparnadur.timi_fyrir_peninga.get())
-        svar = eg_vil / ( eg_a * SPARI_VEXTIR )
-        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
+        eg_a = self.sparnadur.upphaed.get()
+        eg_vil = self.sparnadur.timi_fyrir_peninga.get()
+        athugun = re.compile('\D+')
+        if athugun.search(eg_a) or athugun.search(eg_vil):
+            tkMessageBox.showinfo('villa', 'Þá verður að slá inn tölu ekki bókstaf! \nmundu að við notum bara heilar tölur')
+        elif len(eg_a)==0 or len(eg_vil)==0:
+            tkMessageBox.showinfo('villa', 'verður að fylla út báða reiti! \nmundu að við notum bara heilar tölur')
+        elif int(eg_a)<=0:
+            tkMessageBox.showinfo('villa', 'Þú verður að leggja eitthvað fyrir! \nmundu að við notum bara heilar tölur')
+        else:    
+            svar = int(eg_vil) / ( int(eg_a) * SPARI_VEXTIR )
+            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
 
     def sparnadur_peningar(self):
-        eg_a = int(self.sparnadur.upphaed.get())
-        timi = int(self.sparnadur.peningar_eftir_tima.get())
-        svar = eg_a * SPARI_VEXTIR * timi
-        tkMessageBox.showinfo('Sparnaður', 'Þú munt eiga ' + str(int(round(svar))) + ' kr.')
+        eg_a = self.sparnadur.upphaed.get()
+        timi = self.sparnadur.peningar_eftir_tima.get()
+        athugun = re.compile('\D+')
+        if athugun.search(eg_a) or athugun.search(timi):
+            tkMessageBox.showinfo('villa', 'Þú verður að slá inn tölu ekki bókstaf! \nmundu að við notum bara heilar tölur')
+        elif len(eg_a)==0 or len(timi)==0:
+            tkMessageBox.showinfo('villa', 'verður að fylla út báða reiti! \nmundu að við notum bara heilar tölur')
+        else:
+            svar = int(eg_a) * SPARI_VEXTIR * int(timi)
+            tkMessageBox.showinfo('Sparnaður', 'Þú munt eiga ' + str(int(round(svar))) + ' kr.')
+
 
     def fa_topp_vexti(self, bunki):
         toppur = bunki[0]
@@ -187,18 +210,18 @@ class Reikningur:
         for i in x:
             temp += float(self.sparnadur.upphaed.get())*SPARI_VEXTIR
             y.append(temp)
-        self.graf.teikna_a_graf(x,y)
+        #self.graf.teikna_a_graf(x,y)
 
 
 class Grunnur(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
 
-        self.graf = Graf(self)
+        #self.graf = Graf(self)
         self.sparnadur = Sparnadur(self)
         self.lanasafn= Lanasafn(self)
         self.takkar = Takkar(self)
-        self.reikningur = Reikningur(self.graf, self.sparnadur, self.lanasafn , self.takkar)
+        self.reikningur = Reikningur(self.sparnadur, self.lanasafn , self.takkar)
 
         self.vidmot()
 
@@ -206,7 +229,7 @@ class Grunnur(tk.Frame):
         self.sparnadur.pack(side=tk.TOP,fill='both')
         self.lanasafn.pack(side=tk.TOP, fill='x', expand=True)
         self.takkar.pack(side=tk.TOP, fill='both')
-        self.graf.pack(side=tk.BOTTOM, fill='both', expand=True)
+        #self.graf.pack(side=tk.BOTTOM, fill='both', expand=True)
 
 
 def main():

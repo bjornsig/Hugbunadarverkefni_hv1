@@ -223,7 +223,7 @@ class Reikningur:
             tkMessageBox.showinfo('villa', 'Þú verður að leggja eitthvað fyrir! \nmundu að við notum bara heilar tölur')
         else:
             svar = int(eg_vil) / ( int(eg_a) * SPARI_VEXTIR )
-            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
+            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' mánuð/i.')
 
     def sparnadur_peningar(self):
         eg_a = self.sparnadur.upphaed.get()

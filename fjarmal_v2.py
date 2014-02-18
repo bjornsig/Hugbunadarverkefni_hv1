@@ -3,7 +3,7 @@
 
 import Tkinter as tk
 import tkMessageBox
-import verdbolga
+#import verdbolga
 import matplotlib as mpl
 mpl.use('TkAgg')
 from matplotlib.figure import Figure
@@ -16,18 +16,22 @@ class Graf(tk.LabelFrame):
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
 
-        f = Figure(figsize=(4,4), dpi=50)
-        self.a = f.add_subplot(111)
+        self.f = Figure(figsize=(4,4), dpi=50)
+        self.a = self.f.add_subplot(111)
 
-        self.canvas = FigureCanvasTkAgg(f, master=self)
+        self.canvas = FigureCanvasTkAgg(self.f, master=self)
         self.canvas.show()
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
         self.canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
-    def teikna_a_graf(self, x, y):
-        self.a.plot(x,y)
+    def teikna_a_graf(self, x, y, nafn, titill):
+        self.a.plot(x,y,label=nafn)
+        self.a.legend(title=titill)
         self.canvas.show()
+
+    def hreinsa_graf(self):
+        self.a.cla()
 
 
 class Sparnadur(tk.LabelFrame):
@@ -64,12 +68,23 @@ class Sparnadur(tk.LabelFrame):
         self.takki_timi.grid(column=3,row=3)
 
 
+class Verdtrygging(tk.Toplevel):
+    def __init__(self):
+        tk.Toplevel.__init__(self)
+        hallo = tk.Label(self, text='Viltu verðtryggingu')
+        self.btn = tk.Button(self, text='Skrá', command=(lambda : self.wm_withdraw()))
+        hallo.pack()
+        self.btn.pack()
+
+
 class Lan(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
-        self.tryggt = tk.Button(self, text='Nei')
-        self.heiti = tk.Entry(self, width=50)
-        self.upphaed = tk.Entry(self, width=20)
+        self.verdtrygging = Verdtrygging()
+        self.verdtrygging.wm_withdraw()
+        self.tryggt = tk.Checkbutton(self, command=self.vt)
+        self.heiti = tk.Entry(self, width=30)
+        self.upphaed = tk.Entry(self, width=15)
         self.vextir = tk.Entry(self, width=10)
         self.timabil = tk.Entry(self, width=10)
 
@@ -81,6 +96,9 @@ class Lan(tk.Frame):
         self.heiti.grid(row=0,column=2)
         self.vextir.grid(row=0,column=3)
         self.timabil.grid(row=0,column=4)
+
+    def vt(self):
+        self.verdtrygging.wm_deiconify()
 
     def fa_vexti(self):
         return float(self.vextir.get())
@@ -173,7 +191,7 @@ class Reikningur:
         eg_a = int(self.sparnadur.upphaed.get())
         eg_vil = int(self.sparnadur.timi_fyrir_peninga.get())
         svar = eg_vil / ( eg_a * SPARI_VEXTIR )
-        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði að safna því ef þú notar Vaxtasprota.')
+        tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði að safna svona miklu ef þú notar Vaxtasprota.')
 
     def sparnadur_peningar(self):
         eg_a = int(self.sparnadur.upphaed.get())
@@ -184,7 +202,7 @@ class Reikningur:
     def fa_topp_lan(self, bunki):
         toppur = bunki[0]
         for i in bunki:
-            if i.fa_vexti() > toppur.fa_vexti():
+            if i.fa_vexti() > float(toppur.fa_vexti()):
                 toppur = i
         return toppur
 
@@ -197,6 +215,7 @@ class Reikningur:
 
     def teikna(self):
         lan = self.fa_topp_lan(self.lanasafn.bunki)
+        nafn = lan.fa_nafn()
         timi_lan = lan.fa_timabil()
         timi_spari = int(self.sparnadur.timabil.get())
         upphaed = lan.fa_upphaed() * (lan.fa_vexti() / 100 + 1)
@@ -208,9 +227,9 @@ class Reikningur:
         for i in x[:-1]:
             y_lan.append(y_lan[i] - manadarleg_greidsla)
             y_spari.append(y_spari[i] - spari*SPARI_VEXTIR - manadarleg_greidsla)
-        print(len(x),len(y_lan))
-        self.graf.teikna_a_graf(x,y_lan)
-        self.graf.teikna_a_graf(x,y_spari)
+        self.graf.hreinsa_graf()
+        self.graf.teikna_a_graf(x,y_lan,'Ekki borga inn',nafn)
+        self.graf.teikna_a_graf(x,y_spari,'Borga inn',nafn)
 
 
 class Grunnur(tk.Frame):

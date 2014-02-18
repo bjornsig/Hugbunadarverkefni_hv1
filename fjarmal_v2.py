@@ -71,10 +71,12 @@ class Sparnadur(tk.LabelFrame):
 class Verdtrygging(tk.Toplevel):
     def __init__(self):
         tk.Toplevel.__init__(self)
-        self.stada = 0
+        self.stada = tk.IntVar()
+        self.trygging = tk.Entry(self, width=10)
         hallo = tk.Label(self, text='Viltu verðtryggingu')
         self.btn = tk.Button(self, text='Skrá', command=(lambda : self.wm_withdraw()))
         hallo.pack()
+        self.trygging.pack()
         self.btn.pack()
 
 
@@ -83,7 +85,7 @@ class Lan(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.verdtrygging = Verdtrygging()
         self.verdtrygging.wm_withdraw()
-        self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, command=self.vt)
+        self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, command=self.tryggja)
         self.heiti = tk.Entry(self, width=30)
         self.upphaed = tk.Entry(self, width=15)
         self.vextir = tk.Entry(self, width=10)
@@ -98,8 +100,9 @@ class Lan(tk.Frame):
         self.vextir.grid(row=0,column=3)
         self.timabil.grid(row=0,column=4)
 
-    def vt(self):
-        self.verdtrygging.wm_deiconify()
+    def tryggja(self):
+        if self.verdtrygging.stada.get():
+            self.verdtrygging.wm_deiconify()
 
     def fa_vexti(self):
         vextir = self.vextir.get()
@@ -108,6 +111,8 @@ class Lan(tk.Frame):
             tkMessageBox.showinfo('villa','Það er bókstafur í vaxtarálknum hjá ' + self.heiti.get())
         elif len(vextir)==0:
             tkMessageBox.showinfo('villa','gleymdir að fylla út vaxtadálkinn fyrir ' + self.heiti.get())
+        elif self.verdtrygging.stada.get():
+            return float(vextir) + float(self.verdtrygging.trygging.get())
         else:
             return float(vextir)
 

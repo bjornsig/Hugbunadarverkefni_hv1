@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 #!/usr/bin/env python
+=======
+>>>>>>> b76d30d4a7b6a1ca0220b6d966d77c55fa778e67
 # encoding: utf-8
 
 #Fyrsta talan er verðbólga ársins 1990,...,2013.

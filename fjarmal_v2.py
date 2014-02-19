@@ -181,7 +181,13 @@ class Lan(tk.Frame):
             return float(vextir)
 
     def fa_nafn(self):
-        return self.heiti.get()
+        heiti = self.heiti.get()
+        athugun = re.compile('\s')
+        if len(heiti)==0:
+            tkMessageBox.showinfo('villa','gleymdir að fylla út lánsheiti fyrir lánið þitt')
+        if athugun.match(heiti):
+            tkMessageBox.showinfo('villa','þú verður að slá inn bókstafi, ekki byrja á bili')
+        return heiti
 
     def fa_upphaed(self):
         return int(self.upphaed.get())
@@ -303,6 +309,15 @@ class Reikningur:
             return lan.fa_nafn()
         else:
             return 'Vaxtasproti'
+
+    def prof(self):
+        for i in self.lanasafn.bunki:
+            if i.fa_nafn() == '' or i.fa_vexti() == '' or i.fa_timabil() == '' or i.fa_upphaed() == '':
+                tkMessageBox.showinfo('Sparnaður', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')
+                return False
+        return True
+
+
 
     def teikna(self):
         lan = self.fa_topp_lan(self.lanasafn.bunki)

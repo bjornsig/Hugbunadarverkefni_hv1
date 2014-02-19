@@ -15,7 +15,7 @@ SPARI_VEXTIR = 1.035
 
 class tester():
     def reikna_pening_test(self,upphaed, timi):
-        return int(upphaed * SPARI_VEXTIR * timi)
+        return int(round(upphaed * SPARI_VEXTIR * timi))
 
     def reikna_spari_test(self,upphaed,eg_vil):
         return round(int(eg_vil) / int(upphaed*SPARI_VEXTIR))

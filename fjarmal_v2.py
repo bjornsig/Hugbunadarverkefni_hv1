@@ -75,10 +75,18 @@ class Verdtrygging(tk.Toplevel):
         self.stada = tk.IntVar()
         self.fyrra_ar = ttk.Combobox(self, state='readonly', width=10, values=verdbolga.artal)
         self.seinna_ar = ttk.Combobox(self, state='readonly', width=10, values=verdbolga.artal)
-        hallo = tk.Label(self, text='Viltu verðtryggingu')
+        efst = tk.Label(self, text='Veldu tímabil verðbólgu?')
+        self.i_dag = tk.Button(self, text='Verðbólga í dag')
+        utsk = tk.Label(self, text='Einnig er hægt að velja verðbólgu á tímabili.')
+        fra = tk.Label(self, text='Frá:')
+        til = tk.Label(self, text='Til:')
         self.skra = tk.Button(self, text='Skrá')
-        hallo.pack()
+        efst.pack()
+        self.i_dag.pack()
+        utsk.pack()
+        fra.pack()
         self.fyrra_ar.pack()
+        til.pack()
         self.seinna_ar.pack()
         self.skra.pack()
 
@@ -89,7 +97,9 @@ class Lan(tk.Frame):
         self.verdtrygging = Verdtrygging()
         self.verdtrygging.wm_withdraw()
         self.verdtrygging.skra.config(command=self.skra_tryggingu)
-        self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, command=self.tryggja)
+        self.verdtrygging.i_dag.config(command=self.skra_tryggingu_i_dag)
+        self.i_dag = 0
+        self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, width=8, command=self.tryggja)
         self.heiti = tk.Entry(self, width=30)
         self.upphaed = tk.Entry(self, width=15)
         self.vextir = tk.Entry(self, width=10)
@@ -97,10 +107,27 @@ class Lan(tk.Frame):
 
         self.vidmot()
 
-    def skra_tryggingu(self):
-        vt = self.verdtrygging.fyrra_ar.get() + '-' + self.verdtrygging.seinna_ar.get()
+    def skra_tryggingu_i_dag(self):
+        vt = 'Í dag'
         self.tryggt.config(text=vt)
         self.verdtrygging.wm_withdraw()
+        self.i_dag = 1
+
+    def skra_tryggingu(self):
+        f = self.verdtrygging.fyrra_ar.get()
+        s = self.verdtrygging.seinna_ar.get()
+        if f == '' and s == '':
+            self.tryggt.config(text='')
+            self.tryggt.deselect()
+        elif s != '' and f == '':
+            self.tryggt.config(text=s)
+        elif f != '' and s == '':
+            self.tryggt.config(text=f)
+        else:
+            vt = min(f,s) + '-' + max(f,s)
+            self.tryggt.config(text=vt)
+        self.verdtrygging.wm_withdraw()
+        self.i_dag = 0
 
     def vidmot(self):
         self.tryggt.grid(row=0,column=0)
@@ -114,6 +141,34 @@ class Lan(tk.Frame):
             self.verdtrygging.wm_deiconify()
         else:
             self.tryggt.config(text='')
+            self.i_dag = 0
+
+    def fa_medal_bolgu(self):
+        f = self.verdtrygging.fyrra_ar.get()
+        s = self.verdtrygging.seinna_ar.get()
+        if self.i_dag:
+            return verdbolga.stodlud_verdbolga
+        elif f == '' and s == '':
+            self.tryggt.config(text='')
+            self.tryggt.deselect()
+            self.i_dag = 0
+            return 0
+        elif s != '' and f == '':
+            s = verdbolga.artal.index(int(self.verdtrygging.seinna_ar.get()))
+            return verdbolga.verdbolga[s]
+        elif f != '' and s == '':
+            f = verdbolga.artal.index(int(self.verdtrygging.fyrra_ar.get()))
+            return verdbolga.verdbolga[f]
+        else:
+            f = verdbolga.artal.index(int(self.verdtrygging.fyrra_ar.get()))
+            s = verdbolga.artal.index(int(self.verdtrygging.seinna_ar.get()))
+            if f == s:
+                return verdbolga.verdbolga[f]
+            else:
+                tot = 0
+                for i in verdbolga.verdbolga[f:s+1]:
+                    tot += float(i)
+                return tot/abs(s-f+1)
 
     def fa_vexti(self):
         vextir = self.vextir.get()
@@ -123,7 +178,7 @@ class Lan(tk.Frame):
         elif len(vextir)==0:
             tkMessageBox.showinfo('villa','gleymdir að fylla út vaxtadálkinn fyrir ' + self.heiti.get())
         elif self.verdtrygging.stada.get():
-            return float(vextir) + float(self.verdtrygging.fyrra_ar.get())
+            return float(vextir) + self.fa_medal_bolgu()
         else:
             return float(vextir)
 
@@ -223,7 +278,7 @@ class Reikningur:
             tkMessageBox.showinfo('villa', 'Þú verður að leggja eitthvað fyrir! \nmundu að við notum bara heilar tölur')
         else:
             svar = int(eg_vil) / ( int(eg_a) * SPARI_VEXTIR )
-            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' mánuð/i.')
+            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
 
     def sparnadur_peningar(self):
         eg_a = self.sparnadur.upphaed.get()

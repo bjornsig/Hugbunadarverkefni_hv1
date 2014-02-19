@@ -259,8 +259,8 @@ class Reikningur:
     def virkni_takkar(self):
         self.takkar.meira.config(command=self.lanasafn.nytt_lan)
         self.takkar.minna.config(command=self.lanasafn.taka_ut_lan)
-        self.takkar.hvad.config(command=(lambda : self.bera_saman_vexti if self.prof()))
-        self.takkar.teikna.config(command=(lambda : self.teikna if self.prof()))
+        self.takkar.hvad.config(command=self.prof(self.bera_saman_vexti))
+        self.takkar.teikna.config(command=self.prof(self.teikna))
 
     def bera_saman_vexti(self):
         vextir = self.fa_topp_vexti(self.lanasafn.bunki)

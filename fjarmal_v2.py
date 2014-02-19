@@ -13,6 +13,26 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 SPARI_VEXTIR = 1.035
 
+class tester():
+    def reikna_pening_test(self,upphaed, timi):
+        return int(round(upphaed * SPARI_VEXTIR * timi))
+
+    def reikna_spari_test(self,upphaed,eg_vil):
+        if upphaed == 0:
+            return 0
+        svar = int(eg_vil) / ( int(upphaed) * SPARI_VEXTIR )
+        return int(round(svar))
+
+    def fa_topp_vexti(self,listi):
+        if len(listi) == 0:
+            return 0
+        toppur = listi[0]
+        for i in listi:
+            if toppur < i:
+                toppur = i
+        return toppur
+
+
 class Graf(tk.LabelFrame):
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
@@ -201,10 +221,10 @@ class Lanasafn(tk.LabelFrame):
     def vidmot(self):
         merki = tk.Frame(self)
         tk.Label(merki, text='Verðtryggt').grid(row=0,column=0)
-        tk.Label(merki, text='Upphæð').grid(row=0,column=1)
+        tk.Label(merki, text='Upphæð[Kr.]').grid(row=0,column=1)
         tk.Label(merki, text='Heiti láns').grid(row=0,column=2)
-        tk.Label(merki, text='Vextir').grid(row=0,column=3)
-        tk.Label(merki, text='Tímabil').grid(row=0,column=4)
+        tk.Label(merki, text='Vextir[%]').grid(row=0,column=3, sticky=tk.E)
+        tk.Label(merki, text='Tímabil[Mán]').grid(row=0,column=4)
         merki.columnconfigure(1,weight=2)
         merki.columnconfigure(2,weight=3)
         merki.columnconfigure(3,weight=1)

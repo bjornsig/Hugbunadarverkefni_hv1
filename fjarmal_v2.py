@@ -18,6 +18,8 @@ class tester():
         return int(round(upphaed * SPARI_VEXTIR * timi))
 
     def reikna_spari_test(self,upphaed,eg_vil):
+        if upphaed == 0:
+            return 0
         svar = int(eg_vil) / ( int(upphaed) * SPARI_VEXTIR )
         return int(round(svar))
 

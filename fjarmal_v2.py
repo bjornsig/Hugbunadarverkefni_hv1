@@ -14,6 +14,23 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 SPARI_VEXTIR = 1.035
 BACKGROUND = 'lightgray'
 
+class tester():
+    def reikna_peninga_test(self,upphaed, timi):
+        return int(upphaed * SPARI_VEXTIR * timi)
+
+    def reikna_spari_test(self,upphaed,eg_vil):
+        return int (eg_vil / upphaed*SPARI_VEXTIR)
+
+    def fa_topp_vexti(self,listi):
+        if len(listi) == 0:
+            return 0
+        toppur = lisit[0]
+        for i in lisit:
+            if toppur < i:
+                toppur = i
+        return toppur
+
+
 class Graf(tk.LabelFrame):
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
@@ -172,7 +189,7 @@ class Lan(tk.Frame):
 
     def fa_vexti(self):
         vextir = self.vextir.get()
-        elif self.verdtrygging.stada.get():
+        if self.verdtrygging.stada.get():
             return float(vextir) + self.fa_medal_bolgu()
         else:
             return float(vextir)
@@ -303,7 +320,7 @@ class Reikningur:
             return 'Vaxtasproti'
 
     def prof(self, fall):
-        
+
         for i in self.lanasafn.bunki:
             if i.fa_nafn() == '' or i.fa_vexti() == '' or i.fa_timabil() == '' or i.fa_upphaed() == '':
                 tkMessageBox.showinfo('Sparnaður', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')

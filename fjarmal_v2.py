@@ -12,18 +12,15 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 SPARI_VEXTIR = 1.035
-BACKGROUND = 'lightgray'
 
 class Graf(tk.LabelFrame):
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent, text='Graf', padx=4, pady=4)
         self.f = Figure(figsize=(4,4), dpi=50)
         self.a = self.f.add_subplot(111)
-
         self.canvas = FigureCanvasTkAgg(self.f, master=self)
         self.canvas.show()
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
-
         self.canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
     def teikna_a_graf(self, x, y, nafn, titill):
@@ -72,21 +69,21 @@ class Sparnadur(tk.LabelFrame):
 class Verdtrygging(tk.Toplevel):
     def __init__(self):
         tk.Toplevel.__init__(self)
+        self.wm_title('Verðtrygging')
         self.stada = tk.IntVar()
         self.fyrra_ar = ttk.Combobox(self, state='readonly', width=10, values=verdbolga.artal)
         self.seinna_ar = ttk.Combobox(self, state='readonly', width=10, values=verdbolga.artal)
-        efst = tk.Label(self, text='Veldu tímabil verðbólgu?')
         self.i_dag = tk.Button(self, text='Verðbólga í dag')
-        utsk = tk.Label(self, text='Einnig er hægt að velja verðbólgu á tímabili.')
-        fra = tk.Label(self, text='Frá:')
-        til = tk.Label(self, text='Til:')
         self.skra = tk.Button(self, text='Skrá')
-        efst.pack()
+        self.vidmot()
+
+    def vidmot(self):
+        tk.Label(self, text='Veldu tímabil verðbólgu?').pack()
         self.i_dag.pack()
-        utsk.pack()
-        fra.pack()
+        tk.Label(self, text='Einnig er hægt að velja verðbólgu á tímabili.').pack()
+        tk.Label(self, text='Frá:').pack()
         self.fyrra_ar.pack()
-        til.pack()
+        tk.Label(self, text='Til:').pack()
         self.seinna_ar.pack()
         self.skra.pack()
 
@@ -98,12 +95,13 @@ class Lan(tk.Frame):
         self.verdtrygging.wm_withdraw()
         self.verdtrygging.skra.config(command=self.skra_tryggingu)
         self.verdtrygging.i_dag.config(command=self.skra_tryggingu_i_dag)
+        self.verdtrygging.protocol('WM_DELETE_WINDOW', self.skra_tryggingu)
         self.i_dag = 0
         self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, width=8, command=self.tryggja)
-        self.heiti = tk.Entry(self, width=30)
-        self.upphaed = tk.Entry(self, width=15)
-        self.vextir = tk.Entry(self, width=10)
-        self.timabil = tk.Entry(self, width=10)
+        self.heiti = tk.Entry(self, width=28)
+        self.upphaed = tk.Entry(self, width=13)
+        self.vextir = tk.Entry(self, width=9)
+        self.timabil = tk.Entry(self, width=9)
 
         self.vidmot()
 
@@ -255,8 +253,8 @@ class Reikningur:
     def virkni_takkar(self):
         self.takkar.meira.config(command=self.lanasafn.nytt_lan)
         self.takkar.minna.config(command=self.lanasafn.taka_ut_lan)
-        self.takkar.hvad.config(command=self.bera_saman_vexti)
-        self.takkar.teikna.config(command=self.teikna)
+        self.takkar.hvad.config(command=(lambda : self.bera_saman_vexti if self.prof()))
+        self.takkar.teikna.config(command=(lambda : self.teikna if self.prof()))
 
     def bera_saman_vexti(self):
         vextir = self.fa_topp_vexti(self.lanasafn.bunki)
@@ -278,7 +276,7 @@ class Reikningur:
             tkMessageBox.showinfo('villa', 'Þú verður að leggja eitthvað fyrir! \nmundu að við notum bara heilar tölur')
         else:
             svar = int(eg_vil) / ( int(eg_a) * SPARI_VEXTIR )
-            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' marga mánuði.')
+            tkMessageBox.showinfo('Sparnaður', 'Það tekur ' + str(int(round(svar))) + ' mánuð/i.')
 
     def sparnadur_peningar(self):
         eg_a = self.sparnadur.upphaed.get()

@@ -14,11 +14,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 SPARI_VEXTIR = 1.035
 
 class tester():
-    def reikna_peninga_test(self,upphaed, timi):
+    def reikna_pening_test(self,upphaed, timi):
         return int(upphaed * SPARI_VEXTIR * timi)
 
     def reikna_spari_test(self,upphaed,eg_vil):
-        return round (eg_vil / int(upphaed*SPARI_VEXTIR))
+        return int (round (eg_vil / upphaed*SPARI_VEXTIR)))
 
     def fa_topp_vexti(self,listi):
         if len(listi) == 0:

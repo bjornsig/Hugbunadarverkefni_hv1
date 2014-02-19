@@ -169,21 +169,24 @@ class Lan(tk.Frame):
                 return tot/abs(s-f+1)
 
     def fa_vexti(self):
-        vextir = self.vextir.get()
-        if self.verdtrygging.stada.get():
-            return float(vextir) + self.fa_medal_bolgu()
-        else:
-            return float(vextir)
+        try:
+            vextir = float(self.vextir.get())
+            if self.verdtrygging.stada.get():
+                return float(vextir) + self.fa_medal_bolgu()
+            else:
+                return float(vextir)
+        except Exception, e:
+            tkMessageBox.showinfo('villa', 'Mundu að við notum bara tölustafi.')
 
     def fa_nafn(self):
         heiti = self.heiti.get()
         return heiti
 
     def fa_upphaed(self):
-        return int(self.upphaed.get())
+        return self.upphaed.get()
 
     def fa_timabil(self):
-        return int(self.timabil.get())
+        return self.timabil.get()
 
 
 class Lanasafn(tk.LabelFrame):
@@ -301,31 +304,33 @@ class Reikningur:
             return 'Vaxtasproti'
 
     def prof(self, fall):
-        try:
-            int(self.sparnadur.upphaed.get())
-            int(self.sparnadur.timabil.get())
-        except Exception, e:
-            tkMessageBox.showinfo('Sparnaður', 'Verða að vera tölur í sparnaður.')
         for i in self.lanasafn.bunki:
             if (i.fa_nafn() == ''
                 or i.fa_vexti() == ''
                 or i.fa_timabil() == ''
-                or i.fa_upphaed() == ''
-                or self.sparnadur.upphaed.get() == ''
-                or self.sparnadur.timabil.get() == ''):
-                    tkMessageBox.showinfo('Sparnaður', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')
+                or i.fa_upphaed() == ''):
+                    tkMessageBox.showinfo('Lán', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')
                     break
         else:
-            fall()
+            for i in self.lanasafn.bunki:
+                try:
+                    int(i.upphaed.get())
+                    int(i.timabil.get())
+                    float(i.vextir.get())
+                except Exception, e:
+                    tkMessageBox.showinfo('Lán', 'Upphæð verður að vera í heilum krónum.\n Í tímabil verður að standa hversu margir heilir mánuðir.\n Vextir verða að vera í tölustöfum.')
+                    break
+            else:
+                fall()
 
 
 
     def teikna(self):
         lan = self.fa_topp_lan(self.lanasafn.bunki)
         nafn = lan.fa_nafn()
-        timi_lan = lan.fa_timabil()
+        timi_lan = int(lan.fa_timabil())
         timi_spari = int(self.sparnadur.timabil.get())
-        upphaed = lan.fa_upphaed() * (lan.fa_vexti() / 100 + 1)
+        upphaed = int(lan.fa_upphaed()) * (lan.fa_vexti() / 100 + 1)
         spari = int(self.sparnadur.upphaed.get())
         manadarleg_greidsla = upphaed / timi_lan
         x = range(0,timi_spari+1)

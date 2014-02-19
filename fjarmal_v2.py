@@ -19,7 +19,7 @@ class tester():
 
     def reikna_spari_test(self,upphaed,eg_vil):
         svar = int(eg_vil) / ( int(eg_a) * SPARI_VEXTIR )
-        return int(round(svar)
+        return int(round(svar))
 
     def fa_topp_vexti(self,listi):
         if len(listi) == 0:

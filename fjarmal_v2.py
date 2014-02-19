@@ -220,7 +220,7 @@ class Lanasafn(tk.LabelFrame):
         tk.Label(merki, text='Verðtryggt').grid(row=0,column=0)
         tk.Label(merki, text='Upphæð[Kr.]').grid(row=0,column=1)
         tk.Label(merki, text='Heiti láns').grid(row=0,column=2)
-        tk.Label(merki, text='Vextir[%]').grid(row=0,column=3)
+        tk.Label(merki, text='Vextir[%]').grid(row=0,column=3, sticky=tk.E)
         tk.Label(merki, text='Tímabil[Mán]').grid(row=0,column=4)
         merki.columnconfigure(1,weight=2)
         merki.columnconfigure(2,weight=3)

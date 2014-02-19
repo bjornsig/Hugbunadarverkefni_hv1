@@ -37,9 +37,9 @@ class Sparnadur(tk.LabelFrame):
         tk.LabelFrame.__init__(self, parent, text='Sparnaður', padx=4, pady=4)
         self.upphaed = tk.Entry(self)
         self.timabil = tk.Entry(self)
+        self.takki_peningar = tk.Button(self, text='Reikna')
         self.timi_fyrir_peninga = tk.Entry(self)
         self.takki_timi = tk.Button(self, text='Reikna')
-        self.takki_peningar = tk.Button(self, text='Reikna')
 
         self.vidmot_spari()
         self.vidmot_peningar()
@@ -98,8 +98,8 @@ class Lan(tk.Frame):
         self.verdtrygging.protocol('WM_DELETE_WINDOW', self.skra_tryggingu)
         self.i_dag = 0
         self.tryggt = tk.Checkbutton(self, variable=self.verdtrygging.stada, width=8, command=self.tryggja)
-        self.heiti = tk.Entry(self, width=28)
         self.upphaed = tk.Entry(self, width=13)
+        self.heiti = tk.Entry(self, width=28)
         self.vextir = tk.Entry(self, width=9)
         self.timabil = tk.Entry(self, width=9)
 
@@ -170,7 +170,7 @@ class Lan(tk.Frame):
 
     def fa_vexti(self):
         vextir = self.vextir.get()
-        elif self.verdtrygging.stada.get():
+        if self.verdtrygging.stada.get():
             return float(vextir) + self.fa_medal_bolgu()
         else:
             return float(vextir)
@@ -249,8 +249,8 @@ class Reikningur:
     def virkni_takkar(self):
         self.takkar.meira.config(command=self.lanasafn.nytt_lan)
         self.takkar.minna.config(command=self.lanasafn.taka_ut_lan)
-        self.takkar.hvad.config(command=self.prof(self.bera_saman_vexti))
-        self.takkar.teikna.config(command=self.prof(self.teikna))
+        self.takkar.hvad.config(command=(lambda:self.prof(self.bera_saman_vexti)))
+        self.takkar.teikna.config(command=(lambda:self.prof(self.teikna)))
 
     def bera_saman_vexti(self):
         vextir = self.fa_topp_vexti(self.lanasafn.bunki)
@@ -301,11 +301,20 @@ class Reikningur:
             return 'Vaxtasproti'
 
     def prof(self, fall):
-        
+        try:
+            int(self.sparnadur.upphaed.get())
+            int(self.sparnadur.timabil.get())
+        except Exception, e:
+            tkMessageBox.showinfo('Sparnaður', 'Verða að vera tölur í sparnaður.')
         for i in self.lanasafn.bunki:
-            if i.fa_nafn() == '' or i.fa_vexti() == '' or i.fa_timabil() == '' or i.fa_upphaed() == '':
-                tkMessageBox.showinfo('Sparnaður', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')
-                break
+            if (i.fa_nafn() == ''
+                or i.fa_vexti() == ''
+                or i.fa_timabil() == ''
+                or i.fa_upphaed() == ''
+                or self.sparnadur.upphaed.get() == ''
+                or self.sparnadur.timabil.get() == ''):
+                    tkMessageBox.showinfo('Sparnaður', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')
+                    break
         else:
             fall()
 

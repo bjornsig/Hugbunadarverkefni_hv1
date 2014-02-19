@@ -116,8 +116,8 @@ class Lan(tk.Frame):
         athugun = re.compile('\s')
         if len(heiti)==0:
             tkMessageBox.showinfo('villa','gleymdir að fylla út lánsheiti fyrir lánið þitt')
-        if athugun.search(heiti):
-            tkMessageBox.showinfo('villa','þú verður að slá inn bókstafi, ekki bara bil')
+        if athugun.match(heiti):
+            tkMessageBox.showinfo('villa','þú verður að slá inn bókstafi, ekki byrja á bili')
         return heiti
 
     def fa_upphaed(self):
@@ -251,6 +251,15 @@ class Reikningur:
             return lan[0]
         else:
             return 'Vaxtasproti'
+
+    def prof(self):
+        for i in self.lanasafn.bunki:
+            if i.fa_nafn() == '' or i.fa_vexti() == '' or i.fa_timabil() == '' or i.fa_upphaed() == '':
+                tkMessageBox.showinfo('Sparnaður', 'þú verður að fylla allt út eða fjarlægja óútfyllt lán.')
+                return False
+        return True
+
+
 
     def teikna(self):
         lan = self.fa_topp_lan(self.lanasafn.bunki)
